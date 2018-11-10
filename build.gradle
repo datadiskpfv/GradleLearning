@@ -1,3 +1,5 @@
+apply plugin: 'idea'
+
 logger.info "build.gradle ---> This is executed during the build phase - timestamp @ ${project.gradle.timestamp()}"
 
 logger.info ">>> build.grade version: $gradle.gradleVersion"
@@ -62,7 +64,7 @@ logger.info hello.description
 logger.info hello.group
 
 //TASK DEPENDENCIES
-defaultTasks 'doStartProcess', 'doStep2', 'doSomethingInTheMiddle', 'doFinished'
+defaultTasks 'doFinished'
 task doStartProcess {
     doLast{
         logger.info "$name - Now starting the process - OK!"
@@ -75,13 +77,13 @@ task doStep2 {
     }
 }
 
-task doSomethingInTheMiddle {
+task doSomethingInTheMiddle (dependsOn: 'doStartProcess') {
     doLast {
         logger.info "$name - Performed something in the middle - OK!"
     }
 }
 
-task doFinished {
+task doFinished (dependsOn: ['doSomethingInTheMiddle', 'doStep2']) {
     doLast {
         logger.info "$name - Done OK!"
     }
