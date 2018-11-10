@@ -1,0 +1,4 @@
+rootProject.name = 'minGradleRequirements'
+
+println "settings.gradle ---> This is executed during the initialization phase"
+

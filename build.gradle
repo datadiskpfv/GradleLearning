@@ -1,0 +1,89 @@
+logger.info "build.gradle ---> This is executed during the build phase - timestamp @ ${project.gradle.timestamp()}"
+
+logger.info ">>> build.grade version: $gradle.gradleVersion"
+logger.info ">>> build.grade HomeDir: $gradle.gradleHomeDir"
+logger.info ">>> build.grade UserHomeDir: $gradle.gradleUserHomeDir"
+
+getLogger().info ">>> build.gradle build file: $project.buildFile"
+getLogger().info ">>> build.gradle relative build file path: ${project.relativePath(project.buildFile)}"
+
+// shortcut (SC) for above
+logger.info ">>> build.gradle build file(SC): $buildFile"
+logger.info ">>> build.gradle relative build file path(SC): ${relativePath(buildFile)}"
+
+logger.info "has property gradleVersion: ${project.gradle.hasProperty('gradleVersion')}"
+logger.info "has property projectDir: ${project.gradle.hasProperty('projectDir')}"
+
+// Own Project properties
+logger.info "has property gradleDDPropertiesProp: ${project.hasProperty('gradleDDPropertiesProp')}"
+logger.info "property gradleDDPropertiesProp: ${gradleDDPropertiesProp}"
+
+// Extra Properties Extension
+project.ext.sayHello = "Hello!!"
+logger.info "ext: ${sayHello}"
+
+logger.info "has property timestamp: ${project.gradle.hasProperty('timestamp')}"
+
+// TASKS
+//defaultTasks 'hello', 'hi'
+
+task hi                             // configuration phase - create
+
+project.hi.doLast {                 // configuration phase - configure
+    logger.info "hi"
+}
+
+task hello {                        // all in one create and configure task
+    // properties of the task
+    description = "Log the name of the task"
+    group = "Welcome"
+
+    doFirst {
+        logger.info "My name is: $name and this is doFirst 1st action"
+    }
+
+    doLast {
+        logger.info "My name is: $name and this is doLast 1st action"
+    }
+}
+
+
+// doLast is added to the end of the Action list
+hello.doLast {
+    logger.info "My name is: $name and this is doLast 2nd action"
+}
+
+// doFirst is added to the front of the Action list, this will run first
+hello.doFirst {
+    logger.info "My name is: $name and this is doFirst 2nd action"
+}
+
+logger.info hello.description
+logger.info hello.group
+
+//TASK DEPENDENCIES
+defaultTasks 'doStartProcess', 'doStep2', 'doSomethingInTheMiddle', 'doFinished'
+task doStartProcess {
+    doLast{
+        logger.info "$name - Now starting the process - OK!"
+    }
+}
+
+task doStep2 {
+    doLast {
+        logger.info "$name - Performed OK!"
+    }
+}
+
+task doSomethingInTheMiddle {
+    doLast {
+        logger.info "$name - Performed something in the middle - OK!"
+    }
+}
+
+task doFinished {
+    doLast {
+        logger.info "$name - Done OK!"
+    }
+}
+
