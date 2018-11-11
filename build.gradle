@@ -77,15 +77,34 @@ task doStep2 {
     }
 }
 
-task doSomethingInTheMiddle (dependsOn: 'doStartProcess') {
+task doSomethingInTheMiddle {
     doLast {
         logger.info "$name - Performed something in the middle - OK!"
     }
 }
 
-task doFinished (dependsOn: ['doSomethingInTheMiddle', 'doStep2']) {
+task doFinished (dependsOn: 'doSomethingInTheMiddle') {
     doLast {
         logger.info "$name - Done OK!"
     }
 }
 
+logger.info ">>> ${tasks.findAll { task -> task.name.startsWith('doStep2')}}"
+
+if(Math.random() < 0.5) {
+    doSomethingInTheMiddle.dependsOn doStartProcess, tasks.findAll { task -> task.name.startsWith('doStep2') }
+}
+
+// No need to use $project.gradle we can use $gradle as shortcut
+logger.info ">>> $gradle.taskGraph"
+gradle.taskGraph.whenReady {
+    logger.info ">>> List of all tasks: $gradle.taskGraph.allTasks"
+}
+
+gradle.taskGraph.beforeTask { task ->
+    logger.info "+++ Before task $task.name"
+}
+
+gradle.taskGraph.afterTask { task ->
+    logger.info "+++ After task $task.name"
+}
